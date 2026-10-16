@@ -1,0 +1,36 @@
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        
+        ROWS, COLS = len(grid), len(grid[0])
+        
+        queue = deque()
+        fresh_fruit = 0
+        for r in range(ROWS):
+            for c in range(COLS):
+                if grid[r][c] == 2:
+                    queue.append((r, c))
+                
+                if grid[r][c] == 1:
+                    fresh_fruit += 1
+
+        mins = 0
+        rot = False
+        while queue:
+            for _ in range(len(queue)):
+                r, c = queue.popleft()
+
+                for dr, dc in [(0, 1), (1, 0), (-1, 0), (0, -1)]:
+                    nr, nc = dr + r, dc + c
+                    if 0 <= nr < ROWS and 0 <= nc < COLS and grid[nr][nc] == 1:
+                        queue.append((nr, nc))
+                        grid[nr][nc] = 2
+                        rot = True
+                        fresh_fruit -= 1
+
+            if rot:
+                mins += 1
+                rot = False
+
+            
+        return mins if fresh_fruit == 0 else -1
+            
